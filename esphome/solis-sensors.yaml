@@ -1,0 +1,1475 @@
+# Solis S6 EH3P — Sensors (read-only measurements)
+# Part of ESPHome modbus package — include via packages: in solis-lilygo.yaml
+
+sensor:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Total Energy Generation
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33029
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy This Month
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33031
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy Last Month
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33033
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy Today
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33035
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy Yesterday
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33036
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy This Year
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33037
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Energy Last Year
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33039
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  # --------------------------------------------------------------------------
+  # BMS data  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Max Inverter Current (BMS)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33041
+    value_type: U_WORD
+    accuracy_decimals: 1
+    force_new_range: true
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Temperature (BMS)
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    register_type: read
+    address: 33043
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  # --------------------------------------------------------------------------
+  # PV DC inputs  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_voltage_1_raw
+    name: PV Voltage 1
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33049
+    value_type: U_WORD
+    accuracy_decimals: 1
+    force_new_range: true
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_current_1_raw
+    name: PV Current 1
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33050
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_voltage_2_raw
+    name: PV Voltage 2
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33051
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_current_2_raw
+    name: PV Current 2
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33052
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_voltage_3_raw
+    name: PV Voltage 3
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33053
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_current_3_raw
+    name: PV Current 3
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33054
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_voltage_4_raw
+    name: PV Voltage 4
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33055
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: pv_current_4_raw
+    name: PV Current 4
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33056
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total PV Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33057
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    on_value:
+      then:
+        - script.execute: modbus_activity
+
+  # --------------------------------------------------------------------------
+  # DC Bus  (NORMAL — skip_updates: 2)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Alarm Code Data
+    register_type: read
+    address: 33070
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:alert
+    skip_updates: 2
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Bus Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33071
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: PV Bus Half Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33072
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  # --------------------------------------------------------------------------
+  # 3-phase AC grid voltages, currents, power  (NORMAL — skip_updates: 2)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase A Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33073
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase B Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33074
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase C Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33075
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase A Current
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33076
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase B Current
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33077
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Phase C Current
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33078
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Active Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33079
+    value_type: S_DWORD
+    accuracy_decimals: 0
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Reactive Power
+    device_class: reactive_power
+    state_class: measurement
+    unit_of_measurement: var
+    register_type: read
+    address: 33081
+    value_type: S_DWORD
+    accuracy_decimals: 0
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Apparent Power
+    device_class: apparent_power
+    state_class: measurement
+    unit_of_measurement: VA
+    register_type: read
+    address: 33083
+    value_type: S_DWORD
+    accuracy_decimals: 0
+    skip_updates: 2
+
+  # --------------------------------------------------------------------------
+  # Grid / inverter status  (NORMAL — skip_updates: 2)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Inverter Temperature
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    register_type: read
+    address: 33093
+    value_type: S_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    force_new_range: true
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Grid Frequency
+    device_class: frequency
+    state_class: measurement
+    unit_of_measurement: Hz
+    register_type: read
+    address: 33094
+    value_type: U_WORD
+    accuracy_decimals: 2
+    skip_updates: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: inverter_status_raw
+    internal: true
+    name: Inverter Status Raw
+    register_type: read
+    address: 33095
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:information
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Lead-acid Battery Temperature
+    device_class: temperature
+    state_class: measurement
+    unit_of_measurement: °C
+    register_type: read
+    address: 33096
+    value_type: S_WORD
+    accuracy_decimals: 1
+    skip_updates: 2
+    filters:
+      - multiply: 0.1
+      - lambda: "return (x < -100.0) ? NAN : x;"
+
+  # --------------------------------------------------------------------------
+  # Operating mode / storage control  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operating Mode
+    register_type: read
+    address: 33122
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:cog
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Storage Control Switching Value
+    register_type: read
+    address: 33132
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:battery-sync
+
+  # --------------------------------------------------------------------------
+  # Battery  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33133
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Current
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33134
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: LLC Bus Voltage
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33136
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery SOC
+    device_class: battery
+    state_class: measurement
+    unit_of_measurement: "%"
+    register_type: read
+    address: 33139
+    value_type: U_WORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery SOH
+    state_class: measurement
+    unit_of_measurement: "%"
+    register_type: read
+    address: 33140
+    value_type: U_WORD
+    accuracy_decimals: 0
+    icon: mdi:battery-heart-variant
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Voltage (BMS)
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33141
+    value_type: U_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Current (BMS)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33142
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Charge Current Limit (BMS)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33143
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Discharge Current Limit (BMS)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33144
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Fault Status 1 (BMS)
+    register_type: read
+    address: 33145
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:alert-circle
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Fault Status 2 (BMS)
+    register_type: read
+    address: 33146
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:alert-circle
+
+  # --------------------------------------------------------------------------
+  # Load + Grid port power  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Household Load Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33147
+    value_type: U_WORD
+    accuracy_decimals: 0
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33148
+    value_type: U_WORD
+    accuracy_decimals: 0
+
+  # Battery Power — positive = charging, negative = discharging
+  # Derived from raw magnitude (33149/33150) + direction bit (33135)
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: battery_power_raw
+    name: Battery Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33149
+    value_type: S_DWORD
+    accuracy_decimals: 0
+    lambda: |-
+      if (id(battery_current_direction).state) {
+        return x;
+      } else {
+        return -x;
+      }
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: AC Grid Port Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33151
+    value_type: S_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+
+  # --------------------------------------------------------------------------
+  # 3-phase backup (EPS) output  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Voltage Phase A
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33137
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Current Phase A
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33138
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Voltage Phase B
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33153
+    value_type: U_WORD
+    accuracy_decimals: 1
+    force_new_range: true
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Current Phase B
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33154
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Voltage Phase C
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33155
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup AC Current Phase C
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33156
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  # --------------------------------------------------------------------------
+  # Battery energy totals  (SLOW — skip_updates: 5)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total Battery Charge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33161
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Today Battery Charge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33163
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Yesterday Battery Charge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33164
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total Battery Discharge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33165
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Today Battery Discharge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33167
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Yesterday Battery Discharge Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33168
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  # --------------------------------------------------------------------------
+  # Grid import / export energy  (SLOW — skip_updates: 5)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total Energy Imported From Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33169
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: today_energy_imported_from_grid_raw
+    name: Today Energy Imported From Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33171
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Yesterday Energy Imported From Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33172
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total Energy Fed Into Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33173
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: today_energy_fed_into_grid_raw
+    name: Today Energy Fed Into Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33175
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Yesterday Energy Fed Into Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33176
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  # --------------------------------------------------------------------------
+  # Load energy totals  (SLOW — skip_updates: 5)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Total Energy Consumption
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33177
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Today Energy Consumption
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33179
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Yesterday Energy Consumption
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33180
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  # --------------------------------------------------------------------------
+  # Meter (CT/grid meter) per-phase data  (FAST — no skip_updates)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Voltage A
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33251
+    value_type: U_WORD
+    accuracy_decimals: 1
+    force_new_range: true
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Current A
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33252
+    value_type: S_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Voltage B
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33253
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Current B
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33254
+    value_type: S_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Voltage C
+    device_class: voltage
+    state_class: measurement
+    unit_of_measurement: V
+    register_type: read
+    address: 33255
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter AC Current C
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33256
+    value_type: S_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Active Power A
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33257
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Active Power B
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33259
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Active Power C
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33261
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Total Active Power
+    id: meter_total_active_power_raw
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    register_type: read
+    address: 33263
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Total Reactive Power
+    device_class: reactive_power
+    state_class: measurement
+    unit_of_measurement: var
+    register_type: read
+    address: 33271
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Total Apparent Power
+    device_class: apparent_power
+    state_class: measurement
+    unit_of_measurement: VA
+    register_type: read
+    address: 33279
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Power Factor
+    device_class: power_factor
+    state_class: measurement
+    unit_of_measurement: "%"
+    register_type: read
+    address: 33281
+    value_type: S_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.01
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Grid Frequency
+    device_class: frequency
+    state_class: measurement
+    unit_of_measurement: Hz
+    register_type: read
+    address: 33282
+    value_type: U_WORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+      - lambda: "return (x == 0.0f) ? NAN : x;"
+
+  # Meter energy totals  (SLOW — skip_updates: 5)
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Total Active Energy From Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33283
+    value_type: U_DWORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Total Active Energy To Grid
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33285
+    value_type: U_DWORD
+    accuracy_decimals: 2
+    filters:
+      - multiply: 0.01
+    skip_updates: 5
+
+  # --------------------------------------------------------------------------
+  # Household / backup load energy totals  (SLOW — skip_updates: 5)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Household Load Total Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33580
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Household Load Year Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33582
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Household Load Yesterday Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33584
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Total Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33590
+    value_type: U_DWORD
+    accuracy_decimals: 0
+    force_new_range: true
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Year Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33592
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Yesterday Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33594
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Today Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    register_type: read
+    address: 33596
+    value_type: U_WORD
+    accuracy_decimals: 1
+    filters:
+      - multiply: 0.1
+    skip_updates: 5
+
+  # ==========================================================================
+  # DERIVED SENSORS  (calculated in ESPHome from raw registers)
+  # These replicate the HA integration's hybrid_sensors_derived list
+  # ==========================================================================
+
+  # PV Power per string (V × I)
+
+  - platform: template
+    name: PV Power 1
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      auto v = id(pv_voltage_1_raw).state;
+      auto i = id(pv_current_1_raw).state;
+      if (!isnan(v) && !isnan(i)) return v * i;
+      return {};
+
+  - platform: template
+    name: PV Power 2
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      auto v = id(pv_voltage_2_raw).state;
+      auto i = id(pv_current_2_raw).state;
+      if (!isnan(v) && !isnan(i)) return v * i;
+      return {};
+
+  - platform: template
+    name: PV Power 3
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      auto v = id(pv_voltage_3_raw).state;
+      auto i = id(pv_current_3_raw).state;
+      if (!isnan(v) && !isnan(i)) return v * i;
+      return {};
+
+  - platform: template
+    name: PV Power 4
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      auto v = id(pv_voltage_4_raw).state;
+      auto i = id(pv_current_4_raw).state;
+      if (!isnan(v) && !isnan(i)) return v * i;
+      return {};
+
+  # Battery Charge Power (positive when charging, 0 when discharging)
+
+  - platform: template
+    name: Battery Charge Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      float p = id(battery_power_raw).state;
+      return (p > 0) ? p : 0.0f;
+
+  # Battery Discharge Power (positive when discharging, 0 when charging)
+
+  - platform: template
+    name: Battery Discharge Power
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      float p = id(battery_power_raw).state;
+      return (p < 0) ? -p : 0.0f;
+
+  # Grid Power Net — positive = importing, negative = exporting
+  # Uses meter total active power (33263) which is signed by the meter
+
+  - platform: template
+    name: Grid Power Net
+    device_class: power
+    state_class: measurement
+    unit_of_measurement: W
+    accuracy_decimals: 0
+    update_interval: 5s
+    lambda: |-
+      float v = id(meter_total_active_power_raw).state;
+      if (isnan(v)) return {};
+      return -v;
+
+  # Today net grid energy (imported - exported), approximate from daily counters
+
+  - platform: template
+    name: Today Net Grid Energy
+    device_class: energy
+    state_class: total_increasing
+    unit_of_measurement: kWh
+    accuracy_decimals: 1
+    update_interval: 30s
+    lambda: |-
+      float imp = id(today_energy_imported_from_grid_raw).state;
+      float exp = id(today_energy_fed_into_grid_raw).state;
+      if (!isnan(imp) && !isnan(exp)) return imp - exp;
+      return {};
+
+
+
+  # ===========================================================================
+  # INVERTER RTC SYNC  —  reads clock registers and corrects if >42s off
+  # ===========================================================================
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    id: inverter_clock
+    name: "Inverter Clock (internal)"
+    address: 33022
+    register_count: 6
+    register_type: read
+    value_type: U_WORD
+    skip_updates: 5
+    internal: true
+    entity_category: diagnostic
+    lambda: |-
+      time_t i_t;
+      struct tm i_tm = { 0 };
+      i_tm.tm_year  = ((data[item->offset+ 0] << 8) | (data[item->offset+ 1])) + 2000 - 1900;
+      i_tm.tm_mon   = ((data[item->offset+ 2] << 8) | (data[item->offset+ 3])) - 1;
+      i_tm.tm_mday  = (data[item->offset+ 4] << 8) | (data[item->offset+ 5]);
+      i_tm.tm_hour  = (data[item->offset+ 6] << 8) | (data[item->offset+ 7]);
+      i_tm.tm_min   = (data[item->offset+ 8] << 8) | (data[item->offset+ 9]);
+      i_tm.tm_sec   = (data[item->offset+10] << 8) | (data[item->offset+11]);
+      i_tm.tm_isdst = -1;
+      i_t = mktime(&i_tm);
+      ESP_LOGI("SyncInverterRTC", "Inverter RTC is %02d:%02d:%02d %04d-%02d-%02d",
+        i_tm.tm_hour, i_tm.tm_min, i_tm.tm_sec,
+        i_tm.tm_year + 1900, i_tm.tm_mon + 1, i_tm.tm_mday);
+      auto s_espt = id(network_time).now();
+      if (s_espt.is_valid()) {
+        double deviation = difftime(i_t, s_espt.timestamp);
+        if (abs(deviation) > 42) {
+          std::vector<uint16_t> rtc_data = {
+            (uint16_t)(s_espt.year % 100), s_espt.month, s_espt.day_of_month,
+            s_espt.hour, s_espt.minute, s_espt.second
+          };
+          auto set_rtc_command =
+            modbus_controller::ModbusCommandItem::create_write_multiple_command(
+              modbus_master, 43000, item->register_count, rtc_data);
+          modbus_master->queue_command(set_rtc_command);
+          ESP_LOGI("SyncInverterRTC",
+            "RTC deviation=%.fs, updated to %02d:%02d:%02d %04d-%02d-%02d",
+            deviation, s_espt.hour, s_espt.minute, s_espt.second,
+            s_espt.year, s_espt.month, s_espt.day_of_month);
+        }
+      } else {
+        ESP_LOGI("SyncInverterRTC", "NTP not yet synchronised, skipping RTC check");
+      }
+      return {};

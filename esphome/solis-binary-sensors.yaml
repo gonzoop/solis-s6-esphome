@@ -1,0 +1,199 @@
+# Solis S6 EH3P — Binary Sensors (operation status & mode flags)
+# Part of ESPHome modbus package — include via packages: in solis-lilygo.yaml
+
+binary_sensor:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Normal Operation
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0001
+    filters:
+      - invert:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Initializing
+    register_type: read
+    address: 33121
+    bitmask: 0x0002
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Controlled Turning OFF
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0004
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Fault Leads to Turning OFF
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0008
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Stand-by
+    register_type: read
+    address: 33121
+    bitmask: 0x0010
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Limited Operation
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0020
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Limited Operation External
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0040
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Backup Overload
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0080
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Load Fault
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0100
+    filters:
+      - invert:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Grid Fault
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0200
+    filters:
+      - invert:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Battery Fault
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x0400
+    filters:
+      - invert:
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Grid Surge Warn
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x1000
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Operation Status Fan Fault Warn
+    device_class: problem
+    register_type: read
+    address: 33121
+    bitmask: 0x2000
+
+  # Battery current direction (FAST) — used by Battery Power lambda
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Charging
+    id: battery_current_direction
+    device_class: battery_charging
+    register_type: read
+    address: 33135
+    filters:
+      - invert:
+
+  # --------------------------------------------------------------------------
+  # Work Mode / storage control switch bits — 43110  (SLOW)
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Self-Use
+    register_type: holding
+    address: 43110
+    bitmask: 0x0001
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Time of Use (TOU)
+    register_type: holding
+    address: 43110
+    bitmask: 0x0002
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Off-Grid
+    register_type: holding
+    address: 43110
+    bitmask: 0x0004
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Battery Wakeup
+    register_type: holding
+    address: 43110
+    bitmask: 0x0008
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Reserve Battery (Backup)
+    register_type: holding
+    address: 43110
+    bitmask: 0x0010
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Allow Grid Charge Battery
+    register_type: holding
+    address: 43110
+    bitmask: 0x0020
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Feed-in Priority
+    register_type: holding
+    address: 43110
+    bitmask: 0x0040
+    skip_updates: 5
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Mode Peak Shaving
+    register_type: holding
+    address: 43110
+    bitmask: 0x0800
+    skip_updates: 5
+
+
+# ===========================================================================
+# SENSOR  —  read-only input registers (33xxx) and holding readback (43xxx)
+# ===========================================================================

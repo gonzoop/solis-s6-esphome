@@ -1,0 +1,9 @@
+# ESPHome secrets - never commit these
+esphome/secrets.yaml
+secrets.yaml
+
+# ESPHome build artifacts
+esphome/.esphome/
+
+# Home Assistant local config
+.storage/

@@ -1,0 +1,756 @@
+title: Solis S6 — Solar Dashboard
+views:
+
+  # ============================================================
+  # VIEW 1 — LIVE OVERVIEW
+  # ============================================================
+  - title: Live
+    path: live
+    icon: mdi:solar-power
+    type: panel
+    cards:
+      - type: vertical-stack
+        cards:
+
+          # ── TOP BANNER — key live numbers ──────────────────
+          - type: horizontal-stack
+            cards:
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.solis_lilygo_total_pv_power') | int | default(0) }} W"
+                secondary: PV Generation
+                icon: mdi:solar-panel
+                icon_color: amber
+                layout: vertical
+                fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                      border: 1px solid rgba(255,193,7,0.3);
+                      border-radius: 16px;
+                    }
+                    .primary { font-size: 1.6em; font-weight: 700; color: #ffc107; }
+                    .secondary { color: rgba(255,255,255,0.6); font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; }
+
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.solis_lilygo_battery_soc') | int }}%"
+                secondary: |
+                  {% if is_state('binary_sensor.solis_lilygo_battery_charging', 'on') %}
+                    ⚡ Charging  {{ states('sensor.solis_lilygo_battery_charge_power') | int }} W
+                  {% elif states('sensor.solis_lilygo_battery_discharge_power') | int > 0 %}
+                    ↓ Discharging  {{ states('sensor.solis_lilygo_battery_discharge_power') | int }} W
+                  {% else %}
+                    ○ Standby
+                  {% endif %}
+                icon: |
+                  {% set soc = states('sensor.solis_lilygo_battery_soc') | int %}
+                  {% if soc >= 90 %} mdi:battery
+                  {% elif soc >= 70 %} mdi:battery-70
+                  {% elif soc >= 50 %} mdi:battery-50
+                  {% elif soc >= 30 %} mdi:battery-30
+                  {% else %} mdi:battery-10
+                  {% endif %}
+                icon_color: |
+                  {% set soc = states('sensor.solis_lilygo_battery_soc') | int %}
+                  {% if soc >= 80 %} green
+                  {% elif soc >= 40 %} orange
+                  {% else %} red
+                  {% endif %}
+                layout: vertical
+                fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                      border: 1px solid rgba(76,175,80,0.3);
+                      border-radius: 16px;
+                    }
+                    .primary { font-size: 1.6em; font-weight: 700; color: #4caf50; }
+                    .secondary { color: rgba(255,255,255,0.6); font-size: 0.8em; }
+
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.solis_lilygo_grid_power_net') | int | abs }} W"
+                secondary: |
+                  {% set p = states('sensor.solis_lilygo_grid_power_net') | int %}
+                  {% if p > 50 %} ← Importing from grid
+                  {% elif p < -50 %} → Exporting to grid  {{ (p | abs) }} W
+                  {% else %} ≈ Grid balanced
+                  {% endif %}
+                icon: |
+                  {% set p = states('sensor.solis_lilygo_grid_power_net') | int %}
+                  {% if p > 50 %} mdi:transmission-tower-import
+                  {% elif p < -50 %} mdi:transmission-tower-export
+                  {% else %} mdi:transmission-tower
+                  {% endif %}
+                icon_color: |
+                  {% set p = states('sensor.solis_lilygo_grid_power_net') | int %}
+                  {% if p > 50 %} red
+                  {% elif p < -50 %} cyan
+                  {% else %} grey
+                  {% endif %}
+                layout: vertical
+                fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                      border: 1px solid rgba(33,150,243,0.3);
+                      border-radius: 16px;
+                    }
+                    .primary { font-size: 1.6em; font-weight: 700; color: #29b6f6; }
+                    .secondary { color: rgba(255,255,255,0.6); font-size: 0.8em; }
+
+              - type: custom:mushroom-template-card
+                primary: "{{ states('sensor.solis_lilygo_backup_load_power') | int }} W"
+                secondary: Load (Backup port)
+                icon: mdi:home-lightning-bolt
+                icon_color: purple
+                layout: vertical
+                fill_container: true
+                card_mod:
+                  style: |
+                    ha-card {
+                      background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+                      border: 1px solid rgba(156,39,176,0.3);
+                      border-radius: 16px;
+                    }
+                    .primary { font-size: 1.6em; font-weight: 700; color: #ce93d8; }
+                    .secondary { color: rgba(255,255,255,0.6); font-size: 0.8em; text-transform: uppercase; letter-spacing: 1px; }
+
+          # ── POWER FLOW DIAGRAM ─────────────────────────────
+          - type: custom:power-flow-card-plus
+            entities:
+              grid:
+                entity: sensor.solis_lilygo_grid_power_net
+                name: Grid
+                color_icon:
+                  greater_than_zero: red
+                  less_than_zero: cyan
+              solar:
+                entity: sensor.solis_lilygo_total_pv_power
+                name: Solar
+                display_zero_tolerance: 10
+              battery:
+                entity: sensor.solis_lilygo_battery_power
+                name: Battery
+                state_of_charge: sensor.solis_lilygo_battery_soc
+              home:
+                entity: sensor.solis_lilygo_backup_load_power
+                name: Load
+            watt_threshold: 1000
+            min_flow_rate: 0.5
+            max_flow_rate: 4
+
+          # ── PV STRINGS ─────────────────────────────────────
+          - type: entities
+            title: PV Strings
+            icon: mdi:solar-panel-large
+            entities:
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_pv_voltage_1
+                format: "%.1f V"
+                name: String 1
+                icon: mdi:lightning-bolt
+                entities:
+                  - entity: sensor.solis_lilygo_pv_current_1
+                    format: "%.1f A"
+                    name: Current
+                  - entity: sensor.solis_lilygo_pv_power_1
+                    format: "%.0f W"
+                    name: Power
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_pv_voltage_2
+                format: "%.1f V"
+                name: String 2
+                icon: mdi:lightning-bolt
+                entities:
+                  - entity: sensor.solis_lilygo_pv_current_2
+                    format: "%.1f A"
+                    name: Current
+                  - entity: sensor.solis_lilygo_pv_power_2
+                    format: "%.0f W"
+                    name: Power
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_pv_voltage_3
+                format: "%.1f V"
+                name: String 3
+                icon: mdi:lightning-bolt
+                entities:
+                  - entity: sensor.solis_lilygo_pv_current_3
+                    format: "%.1f A"
+                    name: Current
+                  - entity: sensor.solis_lilygo_pv_power_3
+                    format: "%.0f W"
+                    name: Power
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_pv_voltage_4
+                format: "%.1f V"
+                name: String 4
+                icon: mdi:lightning-bolt
+                entities:
+                  - entity: sensor.solis_lilygo_pv_current_4
+                    format: "%.1f A"
+                    name: Current
+                  - entity: sensor.solis_lilygo_pv_power_4
+                    format: "%.0f W"
+                    name: Power
+              - type: divider
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_total_pv_power
+                format: "%.0f W"
+                name: Total PV Power
+                icon: mdi:sigma
+              - entity: sensor.solis_lilygo_pv_bus_voltage
+                name: PV Bus Voltage
+              - entity: sensor.solis_lilygo_inverter_temperature
+                name: Inverter Temperature
+                icon: mdi:thermometer
+
+          # ── BATTERY DETAIL ─────────────────────────────────
+          - type: gauge
+            entity: sensor.solis_lilygo_battery_soc
+            name: Battery SOC
+            min: 0
+            max: 100
+            needle: true
+            severity:
+              green: 50
+              yellow: 20
+              red: 0
+          - type: entities
+            title: Battery
+            icon: mdi:battery-charging-80
+            entities:
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_battery_voltage
+                format: "%.1f V"
+                name: Voltage / Current / Power
+                entities:
+                  - entity: sensor.solis_lilygo_battery_current
+                    format: "%.1f A"
+                    name: A
+                  - entity: sensor.solis_lilygo_battery_power
+                    format: "%.0f W"
+                    name: W
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_battery_charge_power
+                format: "%.0f W"
+                name: Charge / Discharge
+                entities:
+                  - entity: sensor.solis_lilygo_battery_discharge_power
+                    format: "%.0f W"
+                    name: Discharge
+              - entity: sensor.solis_lilygo_battery_soc
+                name: State of Charge
+              - entity: sensor.solis_lilygo_battery_soh
+                name: State of Health
+              - entity: sensor.solis_lilygo_battery_temperature_bms
+                name: Temperature (BMS)
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_battery_voltage_bms
+                format: "%.1f V"
+                name: BMS Voltage / Current
+                entities:
+                  - entity: sensor.solis_lilygo_battery_current_bms
+                    format: "%.1f A"
+                    name: A
+
+          # ── GRID & AC ──────────────────────────────────────
+          - type: entities
+            title: Grid & AC Output
+            icon: mdi:transmission-tower
+            entities:
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_phase_a_voltage
+                format: "%.1f V"
+                name: Phase A  V / I / W
+                entities:
+                  - entity: sensor.solis_lilygo_phase_a_current
+                    format: "%.1f A"
+                    name: A
+                  - entity: sensor.solis_lilygo_meter_active_power_a
+                    format: "%.0f W"
+                    name: W
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_phase_b_voltage
+                format: "%.1f V"
+                name: Phase B  V / I / W
+                entities:
+                  - entity: sensor.solis_lilygo_phase_b_current
+                    format: "%.1f A"
+                    name: A
+                  - entity: sensor.solis_lilygo_meter_active_power_b
+                    format: "%.0f W"
+                    name: W
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_phase_c_voltage
+                format: "%.1f V"
+                name: Phase C  V / I / W
+                entities:
+                  - entity: sensor.solis_lilygo_phase_c_current
+                    format: "%.1f A"
+                    name: A
+                  - entity: sensor.solis_lilygo_meter_active_power_c
+                    format: "%.0f W"
+                    name: W
+              - type: divider
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_active_power
+                format: "%.0f W"
+                name: Active / Reactive / Apparent
+                entities:
+                  - entity: sensor.solis_lilygo_reactive_power
+                    format: "%.0f W"
+                    name: Q
+                  - entity: sensor.solis_lilygo_apparent_power
+                    format: "%.0f W"
+                    name: S
+              - entity: sensor.solis_lilygo_grid_frequency
+                name: Grid Frequency
+              - entity: sensor.solis_lilygo_meter_power_factor
+                name: Power Factor
+
+          # ── BACKUP OUTPUT ──────────────────────────────────
+          - type: entities
+            title: Backup (EPS) Output
+            icon: mdi:home-lightning-bolt-outline
+            entities:
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_backup_ac_voltage_phase_a
+                format: "%.1f V"
+                name: Phase A  V / I
+                entities:
+                  - entity: sensor.solis_lilygo_backup_ac_current_phase_a
+                    format: "%.1f A"
+                    name: A
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_backup_ac_voltage_phase_b
+                format: "%.1f V"
+                name: Phase B  V / I
+                entities:
+                  - entity: sensor.solis_lilygo_backup_ac_current_phase_b
+                    format: "%.1f A"
+                    name: A
+              - type: custom:multiple-entity-row
+                entity: sensor.solis_lilygo_backup_ac_voltage_phase_c
+                format: "%.1f V"
+                name: Phase C  V / I
+                entities:
+                  - entity: sensor.solis_lilygo_backup_ac_current_phase_c
+                    format: "%.1f A"
+                    name: A
+              - entity: sensor.solis_lilygo_backup_load_power
+                name: Total Backup Load Power
+
+  # ============================================================
+  # VIEW 2 — ENERGY / TODAY
+  # ============================================================
+  - title: Energy
+    path: energy
+    icon: mdi:lightning-bolt-circle
+    cards:
+
+      # ── TODAY AT A GLANCE ─────────────────────────────────
+      - type: horizontal-stack
+        cards:
+          - type: statistic
+            entity: sensor.solis_lilygo_pv_energy_today
+            name: Solar Today
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:solar-panel
+
+          - type: statistic
+            entity: sensor.solis_lilygo_today_energy_imported_from_grid
+            name: Grid Import
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:transmission-tower-import
+
+          - type: statistic
+            entity: sensor.solis_lilygo_today_energy_fed_into_grid
+            name: Grid Export
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:transmission-tower-export
+
+          - type: statistic
+            entity: sensor.solis_lilygo_today_energy_consumption
+            name: Consumption
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:home-lightning-bolt
+
+      # ── BATTERY TODAY ─────────────────────────────────────
+      - type: horizontal-stack
+        cards:
+          - type: statistic
+            entity: sensor.solis_lilygo_today_battery_charge_energy
+            name: Battery Charged
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:battery-charging-high
+
+          - type: statistic
+            entity: sensor.solis_lilygo_today_battery_discharge_energy
+            name: Battery Discharged
+            period:
+              calendar:
+                period: day
+            stat_type: max
+            icon: mdi:battery-arrow-down
+
+          - type: entity
+            entity: sensor.solis_lilygo_today_net_grid_energy
+            name: Net Grid Energy
+            icon: mdi:scale-balance
+
+          - type: entity
+            entity: sensor.solis_lilygo_backup_load_today_energy
+            name: Backup Load Today
+            icon: mdi:home-lightning-bolt-outline
+
+      # ── HISTORICAL CHARTS ─────────────────────────────────
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Power — Last 24 Hours
+          show_states: true
+          colorize_states: true
+        graph_span: 24h
+        series:
+          - entity: sensor.solis_lilygo_total_pv_power
+            name: PV Generation
+            color: "#ffc107"
+            type: area
+            fill_raw: zero
+            stroke_width: 2
+            opacity: 0.3
+          - entity: sensor.solis_lilygo_backup_load_power
+            name: Load
+            color: "#ce93d8"
+            type: line
+            stroke_width: 2
+          - entity: sensor.solis_lilygo_grid_power_net
+            name: Grid (+ import / - export)
+            color: "#29b6f6"
+            type: line
+            stroke_width: 2
+          - entity: sensor.solis_lilygo_battery_power
+            name: Battery (+ charge / - discharge)
+            color: "#4caf50"
+            type: line
+            stroke_width: 2
+
+      - type: custom:apexcharts-card
+        header:
+          show: true
+          title: Battery SOC — Last 24 Hours
+        graph_span: 24h
+        yaxis:
+          - min: 0
+            max: 100
+            apex_config:
+              tickAmount: 5
+        series:
+          - entity: sensor.solis_lilygo_battery_soc
+            name: SOC
+            color: "#4caf50"
+            type: area
+            fill_raw: zero
+            stroke_width: 2
+            opacity: 0.4
+
+      # ── YESTERDAY & MONTH ─────────────────────────────────
+      - type: entities
+        title: Yesterday
+        icon: mdi:calendar-today
+        entities:
+          - entity: sensor.solis_lilygo_pv_energy_yesterday
+            name: Solar Production
+          - entity: sensor.solis_lilygo_yesterday_energy_imported_from_grid
+            name: Grid Import
+          - entity: sensor.solis_lilygo_yesterday_energy_fed_into_grid
+            name: Grid Export
+          - entity: sensor.solis_lilygo_yesterday_energy_consumption
+            name: Total Consumption
+          - entity: sensor.solis_lilygo_yesterday_battery_charge_energy
+            name: Battery Charged
+          - entity: sensor.solis_lilygo_yesterday_battery_discharge_energy
+            name: Battery Discharged
+
+      - type: entities
+        title: This Month / Year
+        icon: mdi:calendar-month
+        entities:
+          - entity: sensor.solis_lilygo_pv_energy_this_month
+            name: Solar This Month
+          - entity: sensor.solis_lilygo_pv_energy_last_month
+            name: Solar Last Month
+          - entity: sensor.solis_lilygo_pv_energy_this_year
+            name: Solar This Year
+          - entity: sensor.solis_lilygo_pv_energy_last_year
+            name: Solar Last Year
+          - type: divider
+          - entity: sensor.solis_lilygo_pv_total_energy_generation
+            name: Total PV Generation (all time)
+          - entity: sensor.solis_lilygo_total_energy_imported_from_grid
+            name: Total Grid Import (all time)
+          - entity: sensor.solis_lilygo_total_energy_fed_into_grid
+            name: Total Grid Export (all time)
+          - entity: sensor.solis_lilygo_total_energy_consumption
+            name: Total Consumption (all time)
+          - entity: sensor.solis_lilygo_total_battery_charge_energy
+            name: Total Battery Charged (all time)
+          - entity: sensor.solis_lilygo_total_battery_discharge_energy
+            name: Total Battery Discharged (all time)
+
+  # ============================================================
+  # VIEW 3 — SETTINGS & CONTROL
+  # ============================================================
+  - title: Control
+    path: control
+    icon: mdi:cog
+    cards:
+
+      # ── WORK MODE ─────────────────────────────────────────
+      - type: entities
+        title: Operation Mode
+        icon: mdi:battery-sync
+        entities:
+          - entity: select.solis_lilygo_work_mode
+            name: Work Mode
+          - entity: sensor.solis_lilygo_work_mode_string
+            name: Active Mode Flags
+          - entity: sensor.solis_lilygo_operating_mode
+            name: Operating Mode (raw)
+          - entity: sensor.solis_lilygo_inverter_status
+            name: Inverter Status
+            icon: mdi:information
+          - entity: select.solis_lilygo_rc_force_charge_discharge
+            name: Force Charge / Discharge
+          - entity: sensor.solis_lilygo_rc_force_charge_discharge_state
+            name: RC State
+
+      # ── BATTERY SETTINGS ──────────────────────────────────
+      - type: entities
+        title: Battery Settings
+        icon: mdi:battery-cog
+        entities:
+          - entity: number.solis_lilygo_max_charge_soc
+            name: Max Charge SOC
+          - entity: number.solis_lilygo_overdischarge_soc
+            name: Overdischarge SOC
+          - entity: number.solis_lilygo_backup_reserve_soc
+            name: Backup Reserve SOC
+          - entity: number.solis_lilygo_force_charge_soc
+            name: Force Charge SOC
+          - entity: number.solis_lilygo_battery_rated_capacity
+            name: Battery Rated Capacity
+          - type: divider
+          - entity: number.solis_lilygo_max_charge_current
+            name: Max Charge Current
+          - entity: number.solis_lilygo_max_discharge_current
+            name: Max Discharge Current
+          - entity: number.solis_lilygo_battery_max_charge_current
+            name: Battery Max Charge Current (BMS override)
+          - entity: number.solis_lilygo_battery_max_discharge_current
+            name: Battery Max Discharge Current (BMS override)
+
+      # ── GRID / POWER LIMITS ───────────────────────────────
+      - type: entities
+        title: Grid & Power Limits
+        icon: mdi:transmission-tower
+        entities:
+          - entity: number.solis_lilygo_limit_output_power
+            name: Limit Output Power
+          - entity: number.solis_lilygo_backflow_power_limit
+            name: Backflow Power Limit
+          - entity: number.solis_lilygo_force_charge_power_limitation
+            name: Force Charge Power Limitation
+
+      # ── RC REMOTE CONTROL ─────────────────────────────────
+      - type: entities
+        title: Remote Control (RC)
+        icon: mdi:remote
+        entities:
+          - entity: number.solis_lilygo_rc_force_charge_power
+            name: Force Charge Power
+          - entity: number.solis_lilygo_rc_force_discharge_power
+            name: Force Discharge Power
+          - entity: number.solis_lilygo_rc_timeout
+            name: RC Timeout (min)
+
+      # ── TOU SLOT 1 ────────────────────────────────────────
+      - type: entities
+        title: Time of Use — Slot 1
+        icon: mdi:clock-time-four
+        entities:
+          - entity: number.solis_lilygo_tou_charge_cut_off_soc_slot_1
+            name: Charge Cut-off SOC
+          - entity: number.solis_lilygo_tou_charge_battery_current_slot_1
+            name: Charge Battery Current
+
+      # ── OFF-GRID SETTINGS ─────────────────────────────────
+      - type: entities
+        title: Off-Grid Settings
+        icon: mdi:transmission-tower-off
+        entities:
+          - entity: number.solis_lilygo_off_grid_overdischarge_soc
+            name: Off-Grid Overdischarge SOC
+
+  # ============================================================
+  # VIEW 4 — DIAGNOSTICS
+  # ============================================================
+  - title: Diagnostics
+    path: diagnostics
+    icon: mdi:clipboard-pulse
+    cards:
+
+      # ── STATUS BITS ───────────────────────────────────────
+      - type: entities
+        title: Operation Status
+        icon: mdi:alert-circle
+        entities:
+          - entity: binary_sensor.solis_lilygo_operation_status_normal_operation
+            name: Normal Operation
+            icon: mdi:check-circle
+          - entity: binary_sensor.solis_lilygo_operation_status_initializing
+            name: Initializing
+          - entity: binary_sensor.solis_lilygo_operation_status_stand_by
+            name: Stand-by
+          - entity: binary_sensor.solis_lilygo_operation_status_limited_operation
+            name: Limited Operation
+          - entity: binary_sensor.solis_lilygo_operation_status_limited_operation_external
+            name: Limited (External)
+          - type: divider
+          - entity: binary_sensor.solis_lilygo_operation_status_controlled_turning_off
+            name: Controlled Shutdown
+            icon: mdi:power
+          - entity: binary_sensor.solis_lilygo_operation_status_fault_leads_to_turning_off
+            name: Fault → Shutdown
+            icon: mdi:alert
+          - entity: binary_sensor.solis_lilygo_operation_status_load_fault
+            name: Load Fault
+            icon: mdi:alert
+          - entity: binary_sensor.solis_lilygo_operation_status_grid_fault
+            name: Grid Fault
+            icon: mdi:alert
+          - entity: binary_sensor.solis_lilygo_operation_status_battery_fault
+            name: Battery Fault
+            icon: mdi:alert
+          - entity: binary_sensor.solis_lilygo_operation_status_backup_overload
+            name: Backup Overload
+            icon: mdi:alert
+          - entity: binary_sensor.solis_lilygo_operation_status_grid_surge_warn
+            name: Grid Surge Warning
+            icon: mdi:alert-outline
+          - entity: binary_sensor.solis_lilygo_operation_status_fan_fault_warn
+            name: Fan Fault Warning
+            icon: mdi:fan-alert
+
+      # ── MODE FLAGS ────────────────────────────────────────
+      - type: entities
+        title: Mode Flags (43110)
+        icon: mdi:flag-checkered
+        entities:
+          - entity: binary_sensor.solis_lilygo_mode_self_use
+            name: Self-Use
+          - entity: binary_sensor.solis_lilygo_mode_time_of_use_tou
+            name: Time of Use (TOU)
+          - entity: binary_sensor.solis_lilygo_mode_off_grid
+            name: Off-Grid
+          - entity: binary_sensor.solis_lilygo_mode_battery_wakeup
+            name: Battery Wakeup
+          - entity: binary_sensor.solis_lilygo_mode_reserve_battery_backup
+            name: Reserve Battery (Backup)
+          - entity: binary_sensor.solis_lilygo_mode_allow_grid_charge_battery
+            name: Grid Charge Battery
+          - entity: binary_sensor.solis_lilygo_mode_feed_in_priority
+            name: Feed-in Priority
+          - entity: binary_sensor.solis_lilygo_mode_peak_shaving
+            name: Peak Shaving
+
+      # ── METER DATA ────────────────────────────────────────
+      - type: entities
+        title: Meter Detail
+        icon: mdi:meter-electric
+        entities:
+          - type: custom:multiple-entity-row
+            entity: sensor.solis_lilygo_meter_ac_voltage_a
+            format: "%.1f V"
+            name: Voltage A / B / C
+            entities:
+              - entity: sensor.solis_lilygo_meter_ac_voltage_b
+                name: B
+              - entity: sensor.solis_lilygo_meter_ac_voltage_c
+                name: C
+          - type: custom:multiple-entity-row
+            entity: sensor.solis_lilygo_meter_ac_current_a
+            format: "%.1f A"
+            name: Current A / B / C
+            entities:
+              - entity: sensor.solis_lilygo_meter_ac_current_b
+                name: B
+              - entity: sensor.solis_lilygo_meter_ac_current_c
+                name: C
+          - type: custom:multiple-entity-row
+            entity: sensor.solis_lilygo_meter_active_power_a
+            format: "%.0f W"
+            name: Active Power A / B / C
+            entities:
+              - entity: sensor.solis_lilygo_meter_active_power_b
+                name: B
+              - entity: sensor.solis_lilygo_meter_active_power_c
+                name: C
+          - entity: sensor.solis_lilygo_meter_total_active_power
+            name: Total Active Power
+          - entity: sensor.solis_lilygo_meter_total_reactive_power
+            name: Total Reactive Power
+          - entity: sensor.solis_lilygo_meter_total_apparent_power
+            name: Total Apparent Power
+          - entity: sensor.solis_lilygo_meter_power_factor
+            name: Power Factor
+          - entity: sensor.solis_lilygo_meter_total_active_energy_from_grid
+            name: Total Energy From Grid
+          - entity: sensor.solis_lilygo_meter_total_active_energy_to_grid
+            name: Total Energy To Grid
+
+      # ── INVERTER INFO ─────────────────────────────────────
+      - type: entities
+        title: Inverter Info
+        icon: mdi:information
+        entities:
+          - entity: sensor.solis_lilygo_product_model
+            name: Product Model
+          - entity: sensor.solis_lilygo_inverter_sn
+            name: Serial Number
+          - entity: sensor.solis_lilygo_inverter_type_definition
+            name: Type Definition
+          - entity: sensor.solis_lilygo_hmi_software_version
+            name: HMI Software Version
+          - entity: sensor.solis_lilygo_protocol_version
+            name: Protocol Version
+          - entity: sensor.solis_lilygo_country_standard_code
+            name: Country Standard
+          - type: divider
+          - entity: sensor.solis_lilygo_inverter_temperature
+            name: Inverter Temperature
+          - entity: sensor.solis_lilygo_llc_bus_voltage
+            name: LLC Bus Voltage
+          - entity: sensor.solis_lilygo_pv_bus_voltage
+            name: PV Bus Voltage
+          - entity: sensor.solis_lilygo_alarm_code_data
+            name: Alarm Code
+          - entity: sensor.solis_lilygo_storage_control_switching_value
+            name: Storage Control Switching Value (raw)

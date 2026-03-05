@@ -1,0 +1,97 @@
+type: custom:sunsynk-power-flow-card
+cardstyle: full
+large_font: false
+show_solar: true
+panel_mode: false
+card_height: 450px
+
+inverter:
+  model: solis
+  modern: true
+  colour: '#959595'
+  autarky: 'no'
+  three_phase: true
+
+solar:
+  mppts: 4
+  show_daily: true
+  colour: '#F4C430'
+  animation_speed: 9
+  max_power: 15000
+  pv1_name: String 1
+  pv2_name: String 2
+  pv3_name: String 3
+  pv4_name: String 4
+
+battery:
+  energy: 14400
+  shutdown_soc: 10
+  show_daily: true
+  colour: pink
+  animation_speed: 6
+  max_power: 10000
+  invert_power: false
+
+load:
+  show_aux: true
+  aux_name: Backup (EPS)
+  aux_type: gen
+  aux_colour: purple
+  aux_off_colour: '#444'
+  show_daily: true
+  animation_speed: 8
+  max_power: 15000
+  essential_name: Household Load
+
+grid:
+  show_daily_buy: true
+  show_daily_sell: true
+  no_grid_colour: red
+  animation_speed: 8
+  max_power: 15000
+  invert_grid: false
+
+entities:
+  # Inverter
+  dc_transformer_temp_90:   sensor.solis_lilygo_inverter_temperature
+  inverter_voltage_154:     sensor.solis_lilygo_phase_a_voltage
+  inverter_current_164:     sensor.solis_lilygo_phase_a_current
+  load_frequency_192:       sensor.solis_lilygo_grid_frequency
+  inverter_status_59:       sensor.solis_lilygo_inverter_status
+
+  # Solar PV
+  pv1_voltage_109:          sensor.solis_lilygo_pv_voltage_1
+  pv1_current_110:          sensor.solis_lilygo_pv_current_1
+  pv1_power_186:            sensor.solis_lilygo_pv_power_1
+  pv2_voltage_111:          sensor.solis_lilygo_pv_voltage_2
+  pv2_current_112:          sensor.solis_lilygo_pv_current_2
+  pv2_power_187:            sensor.solis_lilygo_pv_power_2
+  pv3_voltage_113:          sensor.solis_lilygo_pv_voltage_3
+  pv3_current_114:          sensor.solis_lilygo_pv_current_3
+  pv3_power_188:            sensor.solis_lilygo_pv_power_3
+  pv4_voltage_115:          sensor.solis_lilygo_pv_voltage_4
+  pv4_current_116:          sensor.solis_lilygo_pv_current_4
+  pv4_power_189:            sensor.solis_lilygo_pv_power_4
+  pv_total:                 sensor.solis_lilygo_total_pv_power
+  day_pv_energy_108:        sensor.solis_lilygo_pv_energy_today
+
+  # Battery
+  battery_voltage_183:      sensor.solis_lilygo_battery_voltage
+  battery_soc_184:          sensor.solis_lilygo_battery_soc
+  battery_power_190:        sensor.solis_lilygo_battery_power
+  battery_current_191:      sensor.solis_lilygo_battery_current
+  day_battery_charge_70:    sensor.solis_lilygo_today_battery_charge_energy
+  day_battery_discharge_71: sensor.solis_lilygo_today_battery_discharge_energy
+
+  # Grid
+  grid_ct_power_172:        sensor.solis_lilygo_grid_power_net
+  grid_power_169:           sensor.solis_lilygo_ac_grid_port_power
+  grid_voltage:             sensor.solis_lilygo_phase_a_voltage
+  day_grid_import_76:       sensor.solis_lilygo_today_energy_imported_from_grid
+  day_grid_export_77:       sensor.solis_lilygo_today_energy_fed_into_grid
+
+  # Load
+  essential_power:          sensor.solis_lilygo_household_load_power
+  inverter_power_175:       sensor.solis_lilygo_household_load_power
+  day_load_energy_84:       sensor.solis_lilygo_today_energy_consumption
+  aux_power_166:            sensor.solis_lilygo_backup_load_power
