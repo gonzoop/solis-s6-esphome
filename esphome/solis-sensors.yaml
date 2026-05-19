@@ -421,19 +421,6 @@ sensor:
     accuracy_decimals: 0
     skip_updates: 2
 
-  - platform: modbus_controller
-    modbus_controller_id: modbus_master
-    name: Inverter Power Factor
-    device_class: power_factor
-    state_class: measurement
-    register_type: read
-    address: 33085
-    value_type: S_WORD
-    accuracy_decimals: 3
-    skip_updates: 2
-    filters:
-      - multiply: 0.001
-
   # --------------------------------------------------------------------------
   # Grid / inverter status  (NORMAL — skip_updates: 2)
   # --------------------------------------------------------------------------
@@ -495,43 +482,45 @@ sensor:
       - lambda: "return (x < -100.0) ? NAN : x;"
 
   # --------------------------------------------------------------------------
-  # Fault codes  (NORMAL — skip_updates: 2)
+  # Fault status registers  (NORMAL — skip_updates: 2)
+  # Raw bitmask values — each bit maps to a specific fault per Solis Appendix 5.
+  # Distinct from the generic alarm code at 33070.
   # --------------------------------------------------------------------------
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
-    name: Fault Code 01
+    name: Grid Fault Status
     register_type: read
     address: 33116
     value_type: U_WORD
     entity_category: diagnostic
-    icon: mdi:alert-circle
+    icon: mdi:transmission-tower-off
     skip_updates: 2
     force_new_range: true
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
-    name: Fault Code 02
+    name: Backup Load Fault Status
     register_type: read
     address: 33117
     value_type: U_WORD
     entity_category: diagnostic
-    icon: mdi:alert-circle
+    icon: mdi:home-lightning-bolt-outline
     skip_updates: 2
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
-    name: Fault Code 03
+    name: Battery Fault Status
     register_type: read
     address: 33118
     value_type: U_WORD
     entity_category: diagnostic
-    icon: mdi:alert-circle
+    icon: mdi:battery-alert
     skip_updates: 2
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
-    name: Fault Code 04
+    name: Device Fault Status 04
     register_type: read
     address: 33119
     value_type: U_WORD
@@ -541,7 +530,7 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
-    name: Fault Code 05
+    name: Device Fault Status 05
     register_type: read
     address: 33120
     value_type: U_WORD
