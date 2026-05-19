@@ -16,6 +16,22 @@ select:
       "Force Charge": 1
       "Force Discharge": 2
 
+  # TOU Schedule Enable  (43310)
+  # Write 35 (0x23) = RUN / enable, 33 (0x21) = STOP / disable.
+  # Must be written with function code 0x06 after configuring time slots.
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Schedule
+    address: 43310
+    value_type: U_WORD
+    entity_category: config
+    icon: mdi:calendar-clock
+    skip_updates: 5
+    optionsmap:
+      "Disabled": 33
+      "Enabled": 35
+
   # Work Mode  (43110)
 
   - platform: modbus_controller

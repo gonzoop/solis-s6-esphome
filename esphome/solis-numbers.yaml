@@ -319,6 +319,355 @@ number:
     multiply: 0.1
     step: 0.1
 
+  # -- TOU time slot schedule  (43143–43170)  (SLOW — skip_updates: 5) ------
+  # Each slot defines a charge window and a discharge window via start/end
+  # hour and minute registers.  Enable/disable the whole schedule via
+  # register 43310 (see solis-selects.yaml).
+
+  # Slot 1 — Charge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Charge Start Hour
+    register_type: holding
+    address: 43143
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Charge Start Minute
+    register_type: holding
+    address: 43144
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Charge End Hour
+    register_type: holding
+    address: 43145
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Charge End Minute
+    register_type: holding
+    address: 43146
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  # Slot 1 — Discharge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Discharge Start Hour
+    register_type: holding
+    address: 43147
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Discharge Start Minute
+    register_type: holding
+    address: 43148
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Discharge End Hour
+    register_type: holding
+    address: 43149
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 1 Discharge End Minute
+    register_type: holding
+    address: 43150
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  # Slot 2 — Charge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Charge Start Hour
+    register_type: holding
+    address: 43153
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Charge Start Minute
+    register_type: holding
+    address: 43154
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Charge End Hour
+    register_type: holding
+    address: 43155
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Charge End Minute
+    register_type: holding
+    address: 43156
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  # Slot 2 — Discharge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Discharge Start Hour
+    register_type: holding
+    address: 43157
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Discharge Start Minute
+    register_type: holding
+    address: 43158
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Discharge End Hour
+    register_type: holding
+    address: 43159
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 2 Discharge End Minute
+    register_type: holding
+    address: 43160
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  # Slot 3 — Charge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Charge Start Hour
+    register_type: holding
+    address: 43163
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Charge Start Minute
+    register_type: holding
+    address: 43164
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Charge End Hour
+    register_type: holding
+    address: 43165
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Charge End Minute
+    register_type: holding
+    address: 43166
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  # Slot 3 — Discharge window
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Discharge Start Hour
+    register_type: holding
+    address: 43167
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Discharge Start Minute
+    register_type: holding
+    address: 43168
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-start
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Discharge End Hour
+    register_type: holding
+    address: 43169
+    value_type: U_WORD
+    unit_of_measurement: 'h'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 23
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: TOU Slot 3 Discharge End Minute
+    register_type: holding
+    address: 43170
+    value_type: U_WORD
+    unit_of_measurement: 'min'
+    entity_category: config
+    icon: mdi:clock-end
+    skip_updates: 5
+    mode: box
+    min_value: 0
+    max_value: 59
+
   # -- TOU v2 slot settings  (SLOW — skip_updates: 5) -----------------------
 
   - platform: modbus_controller
