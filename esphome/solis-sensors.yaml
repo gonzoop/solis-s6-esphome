@@ -482,6 +482,63 @@ sensor:
       - lambda: "return (x < -100.0) ? NAN : x;"
 
   # --------------------------------------------------------------------------
+  # Fault status registers  (NORMAL — skip_updates: 2)
+  # Raw bitmask values — each bit maps to a specific fault per Solis Appendix 5.
+  # Distinct from the generic alarm code at 33070.
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Grid Fault Status
+    register_type: read
+    address: 33116
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:transmission-tower-off
+    skip_updates: 2
+    force_new_range: true
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Backup Load Fault Status
+    register_type: read
+    address: 33117
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:home-lightning-bolt-outline
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Fault Status
+    register_type: read
+    address: 33118
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:battery-alert
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Device Fault Status 04
+    register_type: read
+    address: 33119
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:alert-circle
+    skip_updates: 2
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Device Fault Status 05
+    register_type: read
+    address: 33120
+    value_type: U_WORD
+    entity_category: diagnostic
+    icon: mdi:alert-circle
+    skip_updates: 2
+
+  # --------------------------------------------------------------------------
   # Operating mode / storage control  (FAST — no skip_updates)
   # --------------------------------------------------------------------------
 
@@ -1000,6 +1057,41 @@ sensor:
     skip_updates: 5
 
   # --------------------------------------------------------------------------
+  # Battery current limits (inverter-side)  (SLOW — skip_updates: 5)
+  # Distinct from BMS-reported limits at 33143/33144 — these are the
+  # inverter's own configured ceiling values.
+  # --------------------------------------------------------------------------
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Max Charge Current (Inverter)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33206
+    value_type: U_WORD
+    accuracy_decimals: 1
+    force_new_range: true
+    skip_updates: 5
+    filters:
+      - multiply: 0.1
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Battery Max Discharge Current (Inverter)
+    device_class: current
+    state_class: measurement
+    unit_of_measurement: A
+    register_type: read
+    address: 33207
+    value_type: U_WORD
+    accuracy_decimals: 1
+    skip_updates: 5
+    filters:
+      - multiply: 0.1
+
+  # --------------------------------------------------------------------------
   # Meter (CT/grid meter) per-phase data  (FAST — no skip_updates)
   # --------------------------------------------------------------------------
 
@@ -1129,12 +1221,78 @@ sensor:
 
   - platform: modbus_controller
     modbus_controller_id: modbus_master
+    name: Meter Reactive Power A
+    device_class: reactive_power
+    state_class: measurement
+    unit_of_measurement: var
+    register_type: read
+    address: 33265
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Reactive Power B
+    device_class: reactive_power
+    state_class: measurement
+    unit_of_measurement: var
+    register_type: read
+    address: 33267
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Reactive Power C
+    device_class: reactive_power
+    state_class: measurement
+    unit_of_measurement: var
+    register_type: read
+    address: 33269
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
     name: Meter Total Reactive Power
     device_class: reactive_power
     state_class: measurement
     unit_of_measurement: var
     register_type: read
     address: 33271
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Apparent Power A
+    device_class: apparent_power
+    state_class: measurement
+    unit_of_measurement: VA
+    register_type: read
+    address: 33273
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Apparent Power B
+    device_class: apparent_power
+    state_class: measurement
+    unit_of_measurement: VA
+    register_type: read
+    address: 33275
+    value_type: S_DWORD
+    accuracy_decimals: 0
+
+  - platform: modbus_controller
+    modbus_controller_id: modbus_master
+    name: Meter Apparent Power C
+    device_class: apparent_power
+    state_class: measurement
+    unit_of_measurement: VA
+    register_type: read
+    address: 33277
     value_type: S_DWORD
     accuracy_decimals: 0
 
