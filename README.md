@@ -21,12 +21,14 @@ ESPHome configuration and Home Assistant dashboard for the **Solis S6 EH3P three
 
 ```
 esphome/
-  solis-lilygo.yaml           # Main ESPHome device config (WiFi, time, modbus master)
-  solis-binary-sensors.yaml   # Operation status & mode flag bits
-  solis-sensors.yaml          # All read-only measurements (power, energy, temp, etc.)
-  solis-numbers.yaml          # Writable settings (SOC limits, charge currents, etc.)
-  solis-selects.yaml          # Mode selectors (Work Mode, RC Force Charge/Discharge)
-  solis-text-sensors.yaml     # Status strings (Inverter Status, Work Mode, serial, RTC sync)
+  solis-lilygo.yaml           # Main config — native HA API variant
+  solis-lilygo-mqtt.yaml      # Main config — MQTT variant (standalone / any MQTT broker)
+  solis-binary-sensors.yaml   # Operation status & mode flag bits       (shared by both)
+  solis-sensors.yaml          # All read-only measurements               (shared by both)
+  solis-numbers.yaml          # Writable settings                        (shared by both)
+  solis-selects.yaml          # Mode selectors                           (shared by both)
+  solis-text-sensors.yaml     # Status strings                           (shared by both)
+  secrets.yaml.example        # Template — copy to secrets.yaml and fill in
 
 solis-dashboard.yaml          # Lovelace dashboard (4-view: Overview, Solar, Battery, Grid)
 solis-sunsynk-card.yaml       # Sunsynk Power Flow Card config (animated energy flow diagram)
@@ -47,16 +49,48 @@ solis-sunsynk-card.yaml       # Sunsynk Power Flow Card config (animated energy 
 
 ## ESPHome setup
 
+All files in `esphome/` must be in the same directory. The main config includes the five fragment files via ESPHome `packages:`.
+
+### Option A — Native Home Assistant API (default)
+
 1. Copy all files from `esphome/` into your ESPHome config directory (`/config/esphome/`)
-2. Edit `solis-lilygo.yaml`:
-   - Set your WiFi credentials
-   - Set your inverter's Modbus slave address if different from `1`
-3. Flash to your device via ESPHome dashboard or CLI:
+2. Copy `secrets.yaml.example` → `secrets.yaml` and set your WiFi credentials
+3. Edit `solis-lilygo.yaml` if your inverter's Modbus slave address differs from `1`
+4. Flash:
    ```
    esphome run esphome/solis-lilygo.yaml
    ```
+5. Accept the integration in Home Assistant — all entities appear automatically
 
-The main file uses ESPHome `packages:` to include the five fragment files — they must all be in the same directory.
+### Option B — MQTT (standalone / no direct HA integration needed)
+
+Use this variant when you want the ESP32 to publish all readings to an MQTT broker directly — works with any MQTT client (Node-RED, Telegraf, Grafana, plain subscribers) and still supports Home Assistant via MQTT discovery.
+
+1. Copy all files from `esphome/` into your ESPHome config directory
+2. Copy `secrets.yaml.example` → `secrets.yaml` and fill in WiFi **and** MQTT credentials:
+   ```yaml
+   wifi_ssid: "YourNetwork"
+   wifi_password: "YourPassword"
+   mqtt_broker: 192.168.x.x      # your broker IP or hostname
+   mqtt_username: mqtt_user
+   mqtt_password: mqtt_password
+   ```
+3. Flash:
+   ```
+   esphome run esphome/solis-lilygo-mqtt.yaml
+   ```
+
+**MQTT topic structure** (published automatically by ESPHome):
+
+| Entity type | State topic | Command topic |
+|---|---|---|
+| Sensors | `solis-lilygo/sensor/{name}/state` | — |
+| Binary sensors | `solis-lilygo/binary_sensor/{name}/state` | — |
+| Numbers | `solis-lilygo/number/{name}/state` | `solis-lilygo/number/{name}/command` |
+| Selects | `solis-lilygo/select/{name}/state` | `solis-lilygo/select/{name}/command` |
+| Device status | `solis-lilygo/status` | — (`online` / `offline`) |
+
+With `discovery: true` the device self-registers in Home Assistant via the MQTT integration — no manual entity configuration needed.
 
 ---
 
