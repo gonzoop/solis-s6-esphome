@@ -152,7 +152,7 @@ number:
     mode: box
     min_value: 0
     max_value: 20
-    multiply: 100
+    multiply: 10
     step: 0.1
 
   # -- Remote control  (SLOW — skip_updates: 5) ------------------------------
